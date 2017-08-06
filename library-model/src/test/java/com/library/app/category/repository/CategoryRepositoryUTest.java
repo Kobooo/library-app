@@ -5,6 +5,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import com.library.app.category.model.Category;
+import com.library.app.commontest.utils.DBCommandTransactionalExecutor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +18,7 @@ public class CategoryRepositoryUTest {
 	private EntityManager em;
 	private EntityManagerFactory emf;
 	private CategoryRepository categoryRepository;
+	private com.library.app.commontest.utils.DBCommandTransactionalExecutor dbCommandTransactionalExcecutor;
 
 	@Before
 	public void initTestCase() {
@@ -25,6 +27,7 @@ public class CategoryRepositoryUTest {
 
 		categoryRepository = new CategoryRepository();
 	    categoryRepository.em = em;
+		dbCommandTransactionalExcecutor = new DBCommandTransactionalExecutor(em);
 	}
 
 	@After
@@ -36,27 +39,13 @@ public class CategoryRepositoryUTest {
     @Test
     public void addCategoryAndFindIt(){
 
-		Long categoryAddedId = null;
+		final Long categoryAddedId =  dbCommandTransactionalExcecutor.executeCommand(() -> {
+			return categoryRepository.add(java()).getId();
+		});
 
-	    try {
-            em.getTransaction().begin();
-			categoryAddedId = categoryRepository.add(java()).getId();
-			assertThat(categoryAddedId, is(notNullValue()));
-            em.getTransaction().commit();
-            em.clear();
-        }
-        catch (final Exception e){
-	    	fail("this error should not be thrown");
-	        e.printStackTrace();
-	        em.getTransaction().rollback();
-        }
-
+		assertThat(categoryAddedId, is(notNullValue()));
 		Category category = categoryRepository.findById(categoryAddedId);
 		assertThat(category, is(notNullValue()));
 		assertThat(category.getName(), is(equalTo(java().getName())));
     }
-
-
-
-
 }

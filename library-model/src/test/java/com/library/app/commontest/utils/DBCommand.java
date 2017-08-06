@@ -1,4 +1,9 @@
 package com.library.app.commontest.utils;
 
-public interface DBCommand {
+import org.junit.Ignore;
+
+@Ignore
+public interface DBCommand<T> {
+
+    T execute();
 }
