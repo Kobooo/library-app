@@ -4,6 +4,7 @@
 # My Rules
 .idea/
 *.iml
+*/target/**
 
 # User-specific stuff:
 .idea/**/workspace.xml
