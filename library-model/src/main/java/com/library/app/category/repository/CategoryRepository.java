@@ -13,6 +13,10 @@ public Category add(Category category) {
     return category;
 }
 
+    // comment 5
+    // comment 4
+    // comment 3
+
     public Category findById(Long id) {
     return em.find(Category.class,id);
     }
